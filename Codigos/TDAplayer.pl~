@@ -1,0 +1,26 @@
+% Definición del TDA player
+player(Id, Name, Color, Wins, Losses, Draws, RemainingPieces, [Id, Name, Color, Wins, Losses, Draws, RemainingPieces]).
+
+% Predicado para obtener el Id de un jugador
+getIdplayer(Player, Id):-
+    player(Id,_,_,_,_,_,_, Player).
+
+getNameplayer(player,Name):-
+    player(_,Name,_,_,_,_,_, player).
+
+getColorplayer(player,Color):-
+    player(_,_,Color,_,_,_,_, player).
+
+getWinsplayer(player,Wins):-
+    player(_,_,_,Wins,_,_,_, player).
+
+getLossesplayer(player,Losses):-
+    player(_,_,_,_,Losses,_,_, player).
+
+getDrawsplayer(player,Draws):-
+    player(_,_,_,_,_,Draws,_, player).
+
+getRemainingPiecesplayer(player,RemainingPieces):-
+    player(_,_,_,_,_,_,RemainingPieces, player).
+
+
