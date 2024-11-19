@@ -54,7 +54,7 @@ replace_in_list([H|T], Index, Piece, [H|NewT]) :-
 %Nombre: check_vertical_win
 %Dominio: Board(board)
 %descripcion: predicado que verifica si es que existe un ganador vertical
-%Meta Primaria:
+%Meta Primaria: check_vertical_win/2
 %Meta Secunbdaria:
 % Verificar victoria vertical
 check_vertical_win(Board, Winner) :-
@@ -91,9 +91,9 @@ check_consecutive(Column, Winner) :-
 
 
 %Nombre: check_horizontal_win
-%Dominio:
-%descripcion:
-%Meta Primaria:
+%Dominio: board(board)
+%descripcion: predicado que verifica si existe un ganador horizontal
+%Meta Primaria: check_horizontal_win/2
 %Meta Secunbdaria:
 check_horizontal_win(Board, Winner) :-
     check_columns2(Board, Winner).
@@ -112,12 +112,56 @@ check_consecutive2(Column, Winner) :-
      Winner = 0).
 
 
-%Nombre:
+%Nombre: check_diagonal_win
 %Dominio:
 %descripcion:
 %Meta Primaria:
 %Meta Secunbdaria:
+% Verificar victoria diagonal
+check_diagonal_win(Board, Winner) :-
+    (check_ascending_diagonal(Board, Winner), Winner \= 0;  % Verificar diagonales ascendentes
+     check_descending_diagonal(Board, Winner), Winner \= 0), !. % Verificar diagonales descendentes
+check_diagonal_win(_, 0).  % Si no hay ganador, devolver 0.
 
+% Verificar diagonales ascendentes
+check_ascending_diagonal(Board, Winner) :-
+    length(Board, Rows),
+    nth0(0, Board, Row), length(Row, Cols), % Obtener dimensiones del tablero
+    between(0, Rows, StartRow),             % Iterar sobre filas de inicio
+    between(0, Cols, StartCol),             % Iterar sobre columnas de inicio
+    check_ascending_from(StartRow, StartCol, Board, Winner).
+% Verificar 4 consecutivos en diagonal ascendente desde una posición
+check_ascending_from(Row, Col, Board, Winner) :-
+    nth0(Row, Board, Line1), nth0(Col, Line1, Cell1),
+    Row1 is Row + 1, Col1 is Col + 1,
+    nth0(Row1, Board, Line2), nth0(Col1, Line2, Cell2),
+    Row2 is Row + 2, Col2 is Col + 2,
+    nth0(Row2, Board, Line3), nth0(Col2, Line3, Cell3),
+    Row3 is Row + 3, Col3 is Col + 3,
+    nth0(Row3, Board, Line4), nth0(Col3, Line4, Cell4),
+    (Cell1 = Cell2, Cell2 = Cell3, Cell3 = Cell4,  % Verificar igualdad
+     (Cell1 = red -> Winner = 1;
+      Cell1 = yellow -> Winner = 2)).
+% Verificar diagonales descendentes
+check_descending_diagonal(Board, Winner) :-
+    length(Board, Rows),
+    nth0(0, Board, Row), length(Row, Cols), % Obtener dimensiones del tablero
+    between(0, Rows, StartRow),             % Iterar sobre filas de inicio
+    between(0, Cols, StartCol),             % Iterar sobre columnas de inicio
+    check_descending_from(StartRow, StartCol, Board, Winner).
+
+% Verificar 4 consecutivos en diagonal descendente desde una posición
+check_descending_from(Row, Col, Board, Winner) :-
+    nth0(Row, Board, Line1), nth0(Col, Line1, Cell1),
+    Row1 is Row - 1, Col1 is Col + 1,
+    nth0(Row1, Board, Line2), nth0(Col1, Line2, Cell2),
+    Row2 is Row - 2, Col2 is Col + 2,
+    nth0(Row2, Board, Line3), nth0(Col2, Line3, Cell3),
+    Row3 is Row - 3, Col3 is Col + 3,
+    nth0(Row3, Board, Line4), nth0(Col3, Line4, Cell4),
+    (Cell1 = Cell2, Cell2 = Cell3, Cell3 = Cell4,  % Verificar igualdad
+     (Cell1 = red -> Winner = 1;
+      Cell1 = yellow -> Winner = 2)).
 
 %Nombre:
 %Dominio:

@@ -16,27 +16,27 @@ getGamePlayer1([Player1|_], Player1).
 %Nombre: getGamePlayer2
 %Dominio: Game(game) X Player2(player)
 %descripcion: predicado para obtener el jugador 2
-%Meta Primaria:
+%Meta Primaria: getGamePlayer2/2
 %Meta Secunbdaria:
 getGamePlayer2([_, Player2|_], Player2).
 
 %Nombre:getGameBoard
 %Dominio: Game(game) X Board(board)
-%descripcion:
-%Meta Primaria:
+%descripcion: predicado para obtener el tablero
+%Meta Primaria: getGameBoard/2
 %Meta Secunbdaria:
 getGameBoard([_, _, Board|_], Board).
 
-%Nombre:getGamePlayer1
-%Dominio:
-%descripcion:
-%Meta Primaria:
+%Nombre:getGameCurrentTurn
+%Dominio: Game(game) X CurrentTurn(int)
+%descripcion: predicado para obtener el turno actual
+%Meta Primaria: getGameCurrentTurn/2
 %Meta Secunbdaria:
 getGameCurrentTurn([_, _, _, CurrentTurn|_], CurrentTurn).
 
-%Nombre:getGamePlayer1
-%Dominio:
-%descripcion:
+%Nombre:getGameHistory
+%Dominio: Game(game) X History(lista)
+%descripcion: predicado para obtener el historial
 %Meta Primaria:
 %Meta Secunbdaria:
 getGameHistory([_, _, _, _, History], History).
