@@ -113,9 +113,9 @@ check_consecutive2(Column, Winner) :-
 
 
 %Nombre: check_diagonal_win
-%Dominio:
-%descripcion:
-%Meta Primaria:
+%Dominio: Board(board)
+%descripcion: predicaco que verifica si existe ganador diagonal
+%Meta Primaria: check_diagonal_win/2
 %Meta Secunbdaria:
 % Verificar victoria diagonal
 check_diagonal_win(Board, Winner) :-
@@ -163,11 +163,16 @@ check_descending_from(Row, Col, Board, Winner) :-
      (Cell1 = red -> Winner = 1;
       Cell1 = yellow -> Winner = 2)).
 
-%Nombre:
-%Dominio:
-%descripcion:
-%Meta Primaria:
+%Nombre: who_is_winner
+%Dominio: Board(board)
+%descripcion: predicado que verifica si existe algun ganador.
+%Meta Primaria: who_is_winner/2
 %Meta Secunbdaria:
+who_is_winner(Board, Winner) :-
+    (check_horizontal_win(Board, Winner), Winner \= 0);  % Verifica ganador horizontal
+    (check_vertical_win(Board, Winner), Winner \= 0);    % Verifica ganador vertical
+    (check_diagonal_win(Board, Winner), Winner \= 0),    % Verifica ganador diagonal
+    !. % Detiene la evaluación si ya se encontró un ganador
 
-
+who_is_winner(_, 0). % Caso base: No hay ganador.
 
