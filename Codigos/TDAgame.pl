@@ -14,28 +14,32 @@ game(Player1, Player2, Board, CurrentTurn, Game):-
 %descripcion: predicado para obtener al jugador 1
 %Meta Primaria: getGamePlayer1/2
 %Meta Secunbdaria:
-getGamePlayer1([Player1|_], Player1).
+getGamePlayer1(Game, Player1):-
+    game(Player1,_,_,_, Game).
 
 %Nombre: getGamePlayer2
 %Dominio: Game(game) X Player2(player)
 %descripcion: predicado para obtener el jugador 2
 %Meta Primaria: getGamePlayer2/2
 %Meta Secunbdaria:
-getGamePlayer2([_, Player2|_], Player2).
+getGamePlayer2(Game, Player2):-
+    game(_,Player2,_,_, Game).
 
 %Nombre:getGameBoard
 %Dominio: Game(game) X Board(board)
 %descripcion: predicado para obtener el tablero
 %Meta Primaria: getGameBoard/2
 %Meta Secunbdaria:
-getGameBoard([_, _, Board|_], Board).
+getGameBoard(Game, Board):-
+    game(_,_,Board,_, Game).
 
 %Nombre:getGameCurrentTurn
 %Dominio: Game(game) X CurrentTurn(int)
 %descripcion: predicado para obtener el turno actual
 %Meta Primaria: getGameCurrentTurn/2
 %Meta Secunbdaria:
-getGameCurrentTurn([_, _, _, CurrentTurn|_], CurrentTurn).
+getGameCurrentTurn(Game, CurrentTurn):-
+    game(_,_,_,CurrentTurn, Game).
 
 %Nombre:getGameHistory
 %Dominio: Game(game) X History(lista)
@@ -51,10 +55,10 @@ getGameHistory([_, _, _, _, History], History).
 %Meta Secunbdaria:
 is_draw(Game) :-
     getGameBoard(Game, Board),
-    getGamePlayer1(Game, P1),
-    getGamePlayer2(Game, P2),
-    getRemainingPiecesplayer(P1, Pieces1),
-    getRemainingPiecesplayer(P2, Pieces2),
+    getGamePlayer1(Game, Player1),
+    getGamePlayer2(Game, Player2),
+    getRemainingPiecesplayer(Player1, Pieces1),
+    getRemainingPiecesplayer(Player2, Pieces2),
 
     % Verificar si el tablero está lleno
     (  \+ can_play(Board)
@@ -67,9 +71,23 @@ is_draw(Game) :-
     ).
 
 
-
 %Nombre:
 %Dominio:
 %descripcion:
 %Meta Primaria:
 %Meta Secunbdaria:
+
+
+%Nombre: get_current_player
+%Dominio:
+%descripcion:
+%Meta Primaria:
+%Meta Secunbdaria:
+get_current_player(Game, CurrentPlayer) :-
+    getGameCurrentTurn(Game, CurrentTurn),
+    (   CurrentTurn == 1
+    ->  getGamePlayer1(Game, CurrentPlayer),
+        write('Jugador 1: '), write(CurrentPlayer), nl
+    ;   getGamePlayer2(Game, CurrentPlayer),
+        write('Jugador 2: '), write(CurrentPlayer), nl
+    ).
