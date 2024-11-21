@@ -1,3 +1,6 @@
+:-module(tdaboard,[board/1, can_play/1, play_piece/4, check_vertical_win/2, check_horizontal_win/2, check_diagonal_win/2, who_is_winner/2]).
+
+
 %Nombre: Board
 %Dominio: no recibe parametros de entrada
 %descripcion: predicado que crea un tablero de conecta4

@@ -1,3 +1,6 @@
+:-use_module(tdaplayer).
+:-use_module(tdaboard).
+
 %Nombre: game
 % Dominio:Player1(player) X Player2(player) X Board(board) X CurrentTurn
 % descripcion: crea una partida de conecta4
@@ -40,6 +43,30 @@ getGameCurrentTurn([_, _, _, CurrentTurn|_], CurrentTurn).
 %Meta Primaria:
 %Meta Secunbdaria:
 getGameHistory([_, _, _, _, History], History).
+
+%Nombre:
+%Dominio:
+%descripcion:
+%Meta Primaria:
+%Meta Secunbdaria:
+is_draw(Game) :-
+    getGameBoard(Game, Board),
+    getGamePlayer1(Game, P1),
+    getGamePlayer2(Game, P2),
+    getRemainingPiecesplayer(P1, Pieces1),
+    getRemainingPiecesplayer(P2, Pieces2),
+
+    % Verificar si el tablero está lleno
+    (  \+ can_play(Board)
+    ->  write('Tablero lleno, empate detectado'), nl, true
+    ;   % Si no está lleno, verificar si ambos jugadores se quedaron sin piezas
+        (Pieces1 == 0, Pieces2 == 0
+        ->  write('Ambos jugadores sin piezas, empate detectado'), nl, true
+        ;   false
+        )
+    ).
+
+
 
 %Nombre:
 %Dominio:

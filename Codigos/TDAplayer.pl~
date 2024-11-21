@@ -42,25 +42,25 @@ getWinsplayer(Player,Wins):-
 
 %Nombre: getLossesplayer
 %Dominio: player X Name
-/*Descripcion: Obtiene el nombre del jugador*/
+/*Descripcion: Obtiene el numero de derrotas del jugador*/
 %Meta Primaria: getNameplayer/2
 %Meta Secundaria: player(_,Name,_,_,_,_,_;player).
 getLossesplayer(Player,Losses):-
     player(_,_,_,_,Losses,_,_, Player).
 
-%Nombre: getNameplayer
-%Dominio: player X Name
-/*Descripcion: Obtiene el nombre del jugador*/
-%Meta Primaria: getNameplayer/2
-%Meta Secundaria: player(_,Name,_,_,_,_,_;player).
+%Nombre: getDrawplayer
+%Dominio: player X Draws
+/*Descripcion: Obtiene el numero de empates del jugador*/
+%Meta Primaria: getDrawplayer/2
+%Meta Secundaria: player(_,_,_,_,_,Draws,_;player).
 getDrawsplayer(Player,Draws):-
     player(_,_,_,_,_,Draws,_, Player).
 
-%Nombre: getNameplayer
-%Dominio: player X Name
-/*Descripcion: Obtiene el nombre del jugador*/
-%Meta Primaria: getNameplayer/2
-%Meta Secundaria: player(_,Name,_,_,_,_,_;player).
+%Nombre: getRemainingPiecesplayer
+%Dominio: player X RemainingPieces
+/*Descripcion: Obtiene el numero de piezas restantes del jugador*/
+%Meta Primaria: getRemainingPiecesplayer/2
+%Meta Secundaria: player(_,_,_,_,_,_,RemainingPieces;player).
 getRemainingPiecesplayer(Player,RemainingPieces):-
     player(_,_,_,_,_,_,RemainingPieces, Player).
 
