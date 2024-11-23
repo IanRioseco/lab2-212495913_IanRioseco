@@ -71,12 +71,47 @@ is_draw(Game) :-
     ).
 
 
-%Nombre:
+%Nombre: update_stats
 %Dominio:
 %descripcion:
 %Meta Primaria:
 %Meta Secunbdaria:
+update_stats(Game,Oldstats,Newstats):-
+    getGameBoard(Game,Board),
+    getIdPlayer(Oldstats,Id),
+    (  who_is_winner(Board,Winner)
+    ->  (   Winner == 1
+        ->  (   Id == 1
+            ->  update(Oldstats,victory,Newstats)
+            ;   Id==2
+            ->  update(Oldstats,defeat,Newstats)
+            )
+        ;   Winner == 2
+        ->  (   Id==2
+            ->  update(Oldstats,victory,Newstats)
+            ;   Id==1
+            ->  update(Oldstats,defeat,Newstats)
+            )
+        )
+    ;   is_draw(Game)
+    ->  (   Id==1
+        ->  update(Oldstats,draw,Newstats)
+        ;   Id==2
+        ->  update(Oldstats,draw,Newstats)
+        )
+    ).
+% Actualiza las estadísticas de un jugador
+update([ID, Name, Color, Wins, Losses, Draws, Pieces], victory,
+             [ID, Name, Color, NewWins, Losses, Draws, Pieces]) :-
+    NewWins is Wins + 1.
 
+update([ID, Name, Color, Wins, Losses, Draws, Pieces], defeat,
+             [ID, Name, Color, Wins, NewLosses, Draws, Pieces]) :-
+    NewLosses is Losses + 1.
+
+update([ID, Name, Color, Wins, Losses, Draws, Pieces], draw,
+             [ID, Name, Color, Wins, Losses, NewDraws, Pieces]) :-
+    NewDraws is Draws + 1.
 
 %Nombre: get_current_player
 %Dominio:
@@ -91,3 +126,23 @@ get_current_player(Game, CurrentPlayer) :-
     ;   getGamePlayer2(Game, CurrentPlayer),
         write('Jugador 2: '), write(CurrentPlayer), nl
     ).
+
+
+%Nombre: game_get_board
+%Dominio:
+%descripcion:
+%Meta Primaria:
+%Meta Secunbdaria:
+get_game_board(Game,CurrentBoard):-
+    getGameBoard(Game,CurrentBoard).
+
+
+
+
+
+
+%Nombre:
+%Dominio:
+%descripcion:
+%Meta Primaria:
+%Meta Secunbdaria:

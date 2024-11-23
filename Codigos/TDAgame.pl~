@@ -85,10 +85,9 @@ is_draw(Game) :-
 %Meta Secunbdaria:
 get_current_player(Game, CurrentPlayer) :-
     getGameCurrentTurn(Game, CurrentTurn),
-    write('Turno actual: '), write(CurrentTurn), nl, % Imprimir el turno actual
     (   CurrentTurn == 1
     ->  getGamePlayer1(Game, CurrentPlayer),
-        write('Jugador 1: '), write(CurrentPlayer), nl  % Imprimir P1
+        write('Jugador 1: '), write(CurrentPlayer), nl
     ;   getGamePlayer2(Game, CurrentPlayer),
-        write('Jugador 2: '), write(CurrentPlayer), nl  % Imprimir P2
+        write('Jugador 2: '), write(CurrentPlayer), nl
     ).
