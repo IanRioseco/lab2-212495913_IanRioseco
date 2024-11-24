@@ -7,10 +7,10 @@
 %Meta Primaria:
 %Meta Secunbdaria:
 board([F1,F2,F3,F4,F5,F6]):-
-    F1=[yellow,vacio,vacio,vacio,vacio,vacio,vacio],
-    F2=[yellow,vacio,vacio,vacio,vacio,vacio,vacio],
-    F3=[yellow,vacio,vacio,vacio,vacio,vacio,vacio],
-    F4=[yellow,vacio,vacio,vacio,vacio,vacio,vacio],
+    F1=[vacio,vacio,vacio,vacio,vacio,vacio,vacio],
+    F2=[vacio,vacio,vacio,vacio,vacio,vacio,vacio],
+    F3=[vacio,vacio,vacio,vacio,vacio,vacio,vacio],
+    F4=[vacio,vacio,vacio,vacio,vacio,vacio,vacio],
     F5=[vacio,vacio,vacio,vacio,vacio,vacio,vacio],
     F6=[vacio,vacio,vacio,vacio,vacio,vacio,vacio].
 

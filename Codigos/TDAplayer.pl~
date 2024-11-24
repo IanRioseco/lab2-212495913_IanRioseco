@@ -1,3 +1,5 @@
+:-module(tdaplayer,[player/8, getIdplayer/2, getNameplayer/2, getColorplayer/2, getWinsplayer/2, getLossesplayer/2, getDrawsplayer/2, getRemainingPiecesplayer/2]).
+
 %Nombre: player
 %Dominio: id(int) X Nombre(string) X color(string) X Wins(int) X Losses(int) X Draws(int) X RemainingPieces(int) X Player
 %descripcion: Predicado que permite crear un jugador.

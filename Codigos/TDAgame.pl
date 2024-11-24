@@ -60,10 +60,10 @@ is_draw(Game) :-
     getRemainingPiecesplayer(Player1, Pieces1),
     getRemainingPiecesplayer(Player2, Pieces2),
 
-    % Verificar si el tablero está lleno
+    % Verificar si el tablero estï¿½ lleno
     (  \+ can_play(Board)
     ->  write('Tablero lleno, empate detectado'), nl, true
-    ;   % Si no está lleno, verificar si ambos jugadores se quedaron sin piezas
+    ;   % Si no estï¿½ lleno, verificar si ambos jugadores se quedaron sin piezas
         (Pieces1 == 0, Pieces2 == 0
         ->  write('Ambos jugadores sin piezas, empate detectado'), nl, true
         ;   false
@@ -78,7 +78,7 @@ is_draw(Game) :-
 %Meta Secunbdaria:
 update_stats(Game,Oldstats,Newstats):-
     getGameBoard(Game,Board),
-    getIdPlayer(Oldstats,Id),
+    getIdplayer(Oldstats,Id),
     (  who_is_winner(Board,Winner)
     ->  (   Winner == 1
         ->  (   Id == 1
@@ -100,7 +100,7 @@ update_stats(Game,Oldstats,Newstats):-
         ->  update(Oldstats,draw,Newstats)
         )
     ).
-% Actualiza las estadísticas de un jugador
+% Actualiza las estadï¿½sticas de un jugador
 update([ID, Name, Color, Wins, Losses, Draws, Pieces], victory,
              [ID, Name, Color, NewWins, Losses, Draws, Pieces]) :-
     NewWins is Wins + 1.
@@ -137,12 +137,24 @@ get_game_board(Game,CurrentBoard):-
     getGameBoard(Game,CurrentBoard).
 
 
-
-
-
-
-%Nombre:
+%Nombre: end_game
 %Dominio:
 %descripcion:
 %Meta Primaria:
 %Meta Secunbdaria:
+end_game(Game,EndGame):-
+    getGamePlayer1(Game,Player1),
+    getGamePlayer2(Game,Player2),
+    getGameBoard(Game,Board),
+    getGameCurrentTurn(Game,Turn),
+    update_stats(Game,Player1,UpdateP1),
+    update_stats(Game,Player2,UpdateP2),
+    game(UpdateP1,UpdateP2,Board,Turn,EndGame).
+
+
+%Nombre: player_play
+%Dominio:
+%descripcion:
+%Meta Primaria:
+%Meta Secunbdaria:
+% Predicado principal para realizar el movimiento
