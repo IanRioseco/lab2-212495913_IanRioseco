@@ -69,24 +69,3 @@ getRemainingPiecesplayer(Player,RemainingPieces):-
 
 
 
-%Nombre: getRemainingPiecesplayer
-%Dominio: player X RemainingPieces
-/*Descripcion: Obtiene el numero de piezas restantes del jugador*/
-%Meta Primaria: getRemainingPiecesplayer/2
-%Meta Secundaria: player(_,_,_,_,_,_,RemainingPieces;player).
-% Predicado para disminuir la cantidad de piezas restantes de un jugador
-decrease_remaining_pieces(Player,UpdatedPlayer) :-
-    % Obtener el ID, nombre, color, victorias, derrotas, empates y las piezas restantes del jugador
-    nth1(1, Player, ID),
-    nth1(2, Player, Name),
-    nth1(3, Player, Color),
-    nth1(4, Player, Victories),
-    nth1(5, Player, Defeats),
-    nth1(6, Player, Draws),
-    nth1(7, Player, RemainingPieces),
-
-    % Restar 1 a la cantidad de piezas restantes
-    NewRemainingPieces is RemainingPieces - 1,
-
-    % Crear el jugador actualizado con la nueva cantidad de piezas
-    UpdatedPlayer = [ID, Name, Color, Victories, Defeats, Draws, NewRemainingPieces].
