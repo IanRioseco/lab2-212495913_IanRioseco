@@ -7,10 +7,10 @@
 %Meta Primaria:
 %Meta Secunbdaria:
 board([F1,F2,F3,F4,F5,F6]):-
-    F1=[yellow,vacio,vacio,vacio,vacio,vacio,vacio],
-    F2=[yellow,vacio,vacio,vacio,vacio,vacio,vacio],
-    F3=[yellow,vacio,vacio,vacio,vacio,vacio,vacio],
-    F4=[yellow,vacio,vacio,vacio,vacio,vacio,vacio],
+    F1=[vacio,vacio,vacio,vacio,vacio,vacio,vacio],
+    F2=[vacio,vacio,vacio,vacio,vacio,vacio,vacio],
+    F3=[vacio,vacio,vacio,vacio,vacio,vacio,vacio],
+    F4=[vacio,vacio,vacio,vacio,vacio,vacio,vacio],
     F5=[vacio,vacio,vacio,vacio,vacio,vacio,vacio],
     F6=[vacio,vacio,vacio,vacio,vacio,vacio,vacio].
 
@@ -59,7 +59,6 @@ replace_in_list([H|T], Index, Piece, [H|NewT]) :-
 %descripcion: predicado que verifica si es que existe un ganador vertical
 %Meta Primaria: check_vertical_win/2
 %Meta Secunbdaria:
-% Verificar victoria vertical
 check_vertical_win(Board, Winner) :-
     check_columns(Board, Winner).
 
@@ -90,6 +89,7 @@ check_consecutive(Column, Winner) :-
     (C1 = red -> Winner = 1;  % Si todas son rojas, el jugador 1 gana
      C1 = yellow -> Winner = 2;  % Si todas son amarillas, el jugador 2 gana
      Winner = 0).  % Si no hay 4 consecutivos, no hay ganador
+
 
 
 

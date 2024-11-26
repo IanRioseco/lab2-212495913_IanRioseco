@@ -59,37 +59,32 @@ replace_in_list([H|T], Index, Piece, [H|NewT]) :-
 %descripcion: predicado que verifica si es que existe un ganador vertical
 %Meta Primaria: check_vertical_win/2
 %Meta Secunbdaria:
-% Verificar victoria vertical
+% Predicado principal para verificar si hay un ganador vertical
 check_vertical_win(Board, Winner) :-
     check_columns(Board, Winner).
 
 % Recorrer las columnas del tablero
 check_columns([], 0).  % Caso base: No hay más columnas, no hay ganador
-check_columns(Board, Winner) :-
-    check_column(Board, 0, Winner),  % Verificar la columna actual
-    Winner \= 0.  % Si hay ganador, detener recursión
+check_columns([Column|Rest], Winner) :-
+    check_column(Column, Winner),  % Verificar la columna actual
+    Winner \= 0;                   % Si hay ganador, detener recursión
+    check_columns(Rest, Winner).   % Continuar con el resto de las columnas
 
 % Verificar una columna específica
-check_column(Board, Index, Winner) :-
-    find_column(Board, Index, Column),  % Encontrar la columna en el tablero
-    check_consecutive(Column, Winner),  % Verificar las fichas consecutivas en esa columna
-    Winner \= 0.
-
-% Encontrar la columna en el tablero dado un índice
-find_column([], _, []).  % Caso base: No más filas
-find_column([Row|Rest], Index, [Cell|ColumnRest]) :-
-    nth0(Index, Row, Cell),  % Obtener la celda en la fila actual
-    find_column(Rest, Index, ColumnRest).
+check_column(Column, Winner) :-
+    ( check_consecutive(Column, Winner) -> true; Winner = 0 ).  % Si no hay consecutivos, Winner es 0
 
 % Verificar 4 fichas consecutivas en una columna
 check_consecutive(Column, Winner) :-
     length(Column, Length),
     Length >= 4,  % Solo verificamos si la columna tiene al menos 4 filas
     append(_, [C1, C2, C3, C4|_], Column),  % Verificar bloques consecutivos
-    C1 = C2, C2 = C3, C3 = C4,  % Comparar las primeras 4 fichas
+    C1 = C2, C2 = C3, C3 = C4,
     (C1 = red -> Winner = 1;  % Si todas son rojas, el jugador 1 gana
      C1 = yellow -> Winner = 2;  % Si todas son amarillas, el jugador 2 gana
-     Winner = 0).  % Si no hay 4 consecutivos, no hay ganador
+     Winner = 0).  % En cualquier otro caso, no hay ganador
+check_consecutive(_, 0).  % Si no hay bloques consecutivos, no hay ganador
+
 
 
 
