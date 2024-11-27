@@ -19,8 +19,11 @@ board([F1,F2,F3,F4,F5,F6]):-
 %descripcion: verifica si es posible jugar una ficha en el tablero.
 %Meta Primaria: can_play/1.
 %Meta Secunbdaria:no tiene.
-can_play(Board):-
-    member([vacio|_],Board), !.
+can_play(Board) :-
+    (   member([vacio|_], Board)
+    ->  write(''), nl, true
+    ;   write('No se puede jugar en el tablero: está lleno.'), nl, false
+    ).
 
 %Nombre: play_piece.
 %Dominio: Board(board) X Column(int) X Piece(piece) X NewBoard(game).

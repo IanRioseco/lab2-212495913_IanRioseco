@@ -9,6 +9,7 @@
 game(Player1, Player2, Board, CurrentTurn,Game):-
     Game=[Player1, Player2, Board, CurrentTurn,[]].
 
+%getter
 %Nombre: getGamePlayer1
 %Dominio: Game(game) X Player1(player)
 %descripcion: predicado para obtener al jugador 1
@@ -16,6 +17,7 @@ game(Player1, Player2, Board, CurrentTurn,Game):-
 %Meta Secunbdaria:
 getGamePlayer1([Player1,_,_,_,_], Player1).
 
+%getter
 %Nombre: getGamePlayer2
 %Dominio: Game(game) X Player2(player)
 %descripcion: predicado para obtener el jugador 2
@@ -23,7 +25,7 @@ getGamePlayer1([Player1,_,_,_,_], Player1).
 %Meta Secunbdaria:
 getGamePlayer2([_,Player2,_,_,_], Player2).
 
-
+%getter
 %Nombre:getGameCurrentTurn
 %Dominio: Game(game) X CurrentTurn(int)
 %descripcion: predicado para obtener el turno actual
@@ -31,7 +33,7 @@ getGamePlayer2([_,Player2,_,_,_], Player2).
 %Meta Secunbdaria:
 getGameCurrentTurn([_,_,_,CurrentTurn,_], CurrentTurn).
 
-%Nombre:getGameHistory
+%Nombre:Game_History
 %Dominio: Game(game) X History(lista)
 %descripcion: predicado para obtener el historial
 %Meta Primaria:
@@ -44,21 +46,31 @@ game_history([_, _, _, _, History], History).
 %Meta Primaria:
 %Meta Secunbdaria:
 is_draw(Game) :-
-    get_game_board(Game, Board),
+    game_get_board(Game, Board),
     getGamePlayer1(Game, Player1),
     getGamePlayer2(Game, Player2),
     getRemainingPiecesplayer(Player1, Pieces1),
     getRemainingPiecesplayer(Player2, Pieces2),
 
-    % Verificar si el tablero estï¿½ lleno
-    (  \+ can_play(Board)
-    ->  write('Tablero lleno, empate detectado'), nl, true
-    ;   % Si no estï¿½ lleno, verificar si ambos jugadores se quedaron sin piezas
+    % Verificar si el tablero está lleno
+    (   \+ can_play(Board)
+    ->  % Si el tablero está lleno, verificar empate
+        write('Tablero lleno, empate detectado'), nl,
+        true
+    ;   % Si no está lleno, verificar si ambos jugadores no tienen piezas
         (Pieces1 == 0, Pieces2 == 0
-        ->  write('Ambos jugadores sin piezas, empate detectado'), nl, true
-        ;   false
+        ->  write('Ambos jugadores sin piezas, empate detectado'), nl,
+            true
+        ;   % Si no hay empate
+            % Aquí no hay nada que hacer, solo indicamos que no es empate
+            write('No hay empate. Los jugadores pueden seguir jugando.'); nl,
+            false
         )
     ).
+
+% Asegúrate de que no haya recursión accidental entre funciones
+
+
 
 
 %Nombre: update_stats
@@ -66,31 +78,25 @@ is_draw(Game) :-
 %descripcion:
 %Meta Primaria:
 %Meta Secunbdaria:
-update_stats(Game,Oldstats,Newstats):-
-    get_game_board(Game,Board),
-    getIdplayer(Oldstats,Id),
-    (  who_is_winner(Board,Winner)
-    ->  (   Winner == 1
-        ->  (   Id == 1
-            ->  update(Oldstats,victory,Newstats)
-            ;   Id==2
-            ->  update(Oldstats,defeat,Newstats)
-            )
-        ;   Winner == 2
-        ->  (   Id==2
-            ->  update(Oldstats,victory,Newstats)
-            ;   Id==1
-            ->  update(Oldstats,defeat,Newstats)
+update_stats(Game, Oldstats, Newstats) :-
+    game_get_board(Game, Board),
+    getIdplayer(Oldstats, Id),
+
+    (   who_is_winner(Board, Winner)  % Verificamos si hay un ganador
+    ->  (   Winner == Id  % Si el jugador ha ganado
+        ->  update(Oldstats, victory, Newstats)
+        ;   (   Winner \= 0  % Si hay un ganador distinto al jugador
+            ->  update(Oldstats, defeat, Newstats)
+            ;   Newstats = Oldstats  % Si no hay ganador, no hay cambio
             )
         )
-    ;   is_draw(Game)
-    ->  (   Id==1
-        ->  update(Oldstats,draw,Newstats)
-        ;   Id==2
-        ->  update(Oldstats,draw,Newstats)
+    ;   (   is_draw(Game)  % Si hay empate
+        ->  update(Oldstats, draw, Newstats)
+        ;   Newstats = Oldstats  % Si el juego no ha terminado, no hay cambio
         )
     ).
-% Actualiza las estadï¿½sticas de un jugador
+
+% Actualiza las estadisticas de un jugador
 update([ID, Name, Color, Wins, Losses, Draws, Pieces], victory,
              [ID, Name, Color, NewWins, Losses, Draws, Pieces]) :-
     NewWins is Wins + 1.
@@ -123,7 +129,7 @@ get_current_player(Game, CurrentPlayer) :-
 %descripcion: predicado para obtener el tablero
 %Meta Primaria: getGameBoard/2
 %Meta Secunbdaria:
-get_game_board([_,_,Board,_,_], Board).
+game_get_board([_,_,Board,_,_], Board).
 
 
 
@@ -135,11 +141,12 @@ get_game_board([_,_,Board,_,_], Board).
 end_game(Game,EndGame):-
     getGamePlayer1(Game,Player1),
     getGamePlayer2(Game,Player2),
-    get_game_board(Game,Board),
+    game_get_board(Game,Board),
     getGameCurrentTurn(Game,Turn),
+    game_history(Game,History),
     update_stats(Game,Player1,UpdateP1),
     update_stats(Game,Player2,UpdateP2),
-    game(UpdateP1,UpdateP2,Board,Turn,EndGame).
+    EndGame = [UpdateP1,UpdateP2,Board,Turn,History].
 
 
 %Nombre: player_play
@@ -152,7 +159,7 @@ player_play(Game, Player, Column, NewGame) :-
     getGamePlayer1(Game, Player1),
     getGamePlayer2(Game, Player2),
     getGameCurrentTurn(Game, CurrentTurn),
-    get_game_board(Game,Board),
+    game_get_board(Game,Board),
     % Verificar turno del jugador
     (   CurrentTurn == 1
     ->  Pactual = Player1
@@ -161,7 +168,7 @@ player_play(Game, Player, Column, NewGame) :-
     getIdplayer(Player,Idplayer),
     getIdplayer(Pactual,Idactual),
     (   Idplayer == Idactual
-    ->  PlayerToUse =Player
+    ->  PlayerToUse = Pactual
     ;   write('no es el turno del jugador'),nl,fail
     ),
 
@@ -183,7 +190,7 @@ player_play(Game, Player, Column, NewGame) :-
     decreasePieces(PlayerToUse,NewPlayer),
 
     % actualizar turno
-    NewTurn is 3 -CurrentTurn,
+    NewTurn is 3 - CurrentTurn,
 
     % verificar estado del juego
     (   who_is_winner(NewBoard,Winner), Winner \= 0
@@ -191,8 +198,8 @@ player_play(Game, Player, Column, NewGame) :-
     ;   is_draw(Game)
     ->  end_game(Game,NewGame)
     ;   (   CurrentTurn == 1
-        ->  NewGame=[NewPlayer,Player2,NewBoard,NewTurn,History]
-        ;   NewGame=[Player1,NewPlayer,NewBoard,NewTurn,History]
+        ->  NewGame = [NewPlayer,Player2,NewBoard,NewTurn,History]
+        ;   NewGame = [Player1,NewPlayer,NewBoard,NewTurn,History]
         )
     ).
 
@@ -226,7 +233,7 @@ update_game_history(Game, Column, Color, NewGame) :-
     % Obtener los demás elementos del juego (jugadores, tablero, etc.)
     getGamePlayer1(Game, Player1),
     getGamePlayer2(Game, Player2),
-    get_game_board(Game, Board),
+    game_get_board(Game, Board),
     getGameCurrentTurn(Game, CurrentTurn),
 
     % Crear el nuevo estado del juego con el historial actualizado
