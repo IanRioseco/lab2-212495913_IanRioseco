@@ -179,15 +179,19 @@ player_play(Game, Player, Column, NewGame) :-
 
     % disminuir piezas
     decreasePieces(PlayerToUse,NewPlayer),
+    (   CurrentTurn == 1
+    ->  NGame = [NewPlayer,Player2,NewBoard,NewTurn,History]
+    ;   NGame = [Player1,NewPlayer,NewBoard,NewTurn,History]
+    ),
 
     % actualizar turno
     NewTurn is 3 - CurrentTurn,
 
     % verificar estado del juego
     (   who_is_winner(NewBoard,Winner), Winner \= 0
-    ->  end_game(Game,NewGame)
-    ;   is_draw(Game)
-    ->  end_game(Game,NewGame)
+    ->  end_game(NGame,NewGame)
+    ;   is_draw(NGame)
+    ->  end_game(NGame,NewGame)
     ;   (   CurrentTurn == 1
         ->  NewGame = [NewPlayer,Player2,NewBoard,NewTurn,History]
         ;   NewGame = [Player1,NewPlayer,NewBoard,NewTurn,History]

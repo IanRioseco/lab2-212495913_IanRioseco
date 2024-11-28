@@ -53,23 +53,14 @@ is_draw(Game) :-
     getRemainingPiecesplayer(Player2, Pieces2),
 
     % Verificar si el tablero está lleno
-    (   \+ can_play(Board)
-    ->  % Si el tablero está lleno, verificar empate
-        write('Tablero lleno, empate detectado'), nl,
-        true
-    ;   % Si no está lleno, verificar si ambos jugadores no tienen piezas
+    (  \+ can_play(Board)
+    ->  write('Tablero lleno, empate detectado'), nl, true
+    ;   % Si no está lleno, verificar si ambos jugadores se quedaron sin piezas
         (Pieces1 == 0, Pieces2 == 0
-        ->  write('Ambos jugadores sin piezas, empate detectado'), nl,
-            true
-        ;   % Si no hay empate
-            % Aquí no hay nada que hacer, solo indicamos que no es empate
-            write('No hay empate. Los jugadores pueden seguir jugando.'); nl,
-            false
+        ->  write('Ambos jugadores sin piezas, empate detectado'), nl, true
+        ;   false
         )
     ).
-
-% Asegúrate de que no haya recursión accidental entre funciones
-
 
 
 
