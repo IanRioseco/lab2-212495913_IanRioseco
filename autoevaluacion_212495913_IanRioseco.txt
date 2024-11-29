@@ -6,3 +6,30 @@ Escala:
 1: Implementación completa sin problemas (funciona 100% de las veces)
 
 TDA / Función / Puntaje
+TDA Player-constructor / player / 1
+TDA Player-selector / getIdplayer / 1
+TDA Player-selector / getNameplayer / 1
+TDA Player-selector / getColorplayer / 1
+TDA Player-selector / getWinsplayer / 1
+TDA Player-selector / getLossesplayer / 1
+TDA Player-selector / getDrawsplayer / 1
+TDA Player-selector / getRemainingPiecesplayer / 1
+
+TDA Piece-constructor / piece / 1
+
+TDA Board-constructor / board / 1
+TDA Board-otros / can_play / 1
+TDA Board-modificador / play_piece / 1
+TDA Board-otros / check_vertical_win / 0,75
+TDA Board-otros / check_horizontal_win / 0,75
+TDA Board-otros / check_diagonal_win / 0,75
+TDA Board-otros / who_is_winner / 0,75
+
+TDA Game-constructor / game / 1
+TDA Game-otros / game_history / 1
+TDA Game-otros / is_draw? / 0,50
+TDA Game-otros / update-stats / 1
+TDA Game-selector / get-current-player / 1
+TDA Game-selector / game-get-board / 1
+TDA Game-modificador / end_game / 1
+TDA Game-modificador / player_play / 0,75

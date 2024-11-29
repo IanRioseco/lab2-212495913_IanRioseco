@@ -5,8 +5,6 @@
 %descripcion: Predicado que permite crear un jugador.
 %Meta Primaria: player/8.
 %Meta Secunbdaria: no contiene.
-
-
 player(Id, Name, Color, Wins, Losses, Draws, RemainingPieces, [Id, Name, Color, Wins, Losses, Draws, RemainingPieces]).
 
 

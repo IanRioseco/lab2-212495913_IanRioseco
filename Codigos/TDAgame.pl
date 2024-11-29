@@ -1,5 +1,6 @@
 :-use_module(tdaplayer).
 :-use_module(tdaboard).
+:-use_module(tdapiece).
 
 %Nombre: game
 % Dominio:Player1(player) X Player2(player) X Board(board) X CurrentTurn
@@ -87,6 +88,11 @@ update_stats(Game, Oldstats, Newstats) :-
         )
     ).
 
+%Nombre: end_game
+%Dominio:
+%descripcion:
+%Meta Primaria:
+%Meta Secunbdaria:
 % Actualiza las estadisticas de un jugador
 update([ID, Name, Color, Wins, Losses, Draws, Pieces], victory,
              [ID, Name, Color, NewWins, Losses, Draws, Pieces]) :-
@@ -198,6 +204,11 @@ player_play(Game, Player, Column, NewGame) :-
         )
     ).
 
+%Nombre: player_play
+%Dominio:
+%descripcion:
+%Meta Primaria:
+%Meta Secunbdaria:
 decreasePieces(Player,UpdatedPlayer) :-
     % Obtener el ID, nombre, color, victorias, derrotas, empates y las piezas restantes del jugador
     nth1(1, Player, ID),
@@ -214,6 +225,11 @@ decreasePieces(Player,UpdatedPlayer) :-
     % Crear el jugador actualizado con la nueva cantidad de piezas
     UpdatedPlayer = [ID, Name, Color, Victories, Defeats, Draws, NewRemainingPieces].
 
+%Nombre: player_play
+%Dominio:
+%descripcion:
+%Meta Primaria:
+%Meta Secunbdaria:
 % Predicado que actualiza el historial del juego
 update_game_history(Game, Column, Color, NewGame) :-
     % Obtener el historial actual

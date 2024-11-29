@@ -64,7 +64,11 @@ replace_in_list([H|T], Index, Piece, [H|NewT]) :-
 %Meta Secunbdaria:
 % Predicado principal para verificar si hay una victoria vertical
 check_vertical_win(Board, Winner) :-
-    check_columns(Board, Winner).
+    (   check_columns(Board, Winner),
+        Winner \= 0  % Si se encuentra un ganador, detener
+    ->  true
+    ;   Winner = 0  % Si no se encuentra un ganador, devolver 0
+    ).
 
 % Verificar todas las columnas
 check_columns([], 0).  % Si no hay más columnas, no hay ganador
@@ -73,14 +77,15 @@ check_columns(Board, Winner) :-
     check_column(Column, Winner),  % Verificar la columna
     (   Winner \= 0 -> !  % Si hay un ganador, detener
     ;   % Si no hay ganador, continuar con el resto de las columnas
-        maplist(remove_first, Board, NewBoard),  % Eliminar la primera celda de cada fila
+        remove_first_from_board(Board, NewBoard),  % Eliminar la primera celda de cada fila
         check_columns(NewBoard, Winner)  % Continuar verificando
     ).
 
 % Función para obtener la primera columna de un tablero
 get_column([], []).  % Si no hay filas, retornar lista vacía
-get_column(Board, [First|Rest]) :-
-    maplist(nth1(1), Board, [First|Rest]).  % Obtener el primer elemento de cada fila
+get_column([Row|RestRows], [First|RestFirsts]) :-
+    nth0(0, Row, First),  % Obtener el primer elemento de la fila
+    get_column(RestRows, RestFirsts).  % Recursivamente obtener el resto de la columna
 
 % Verificar una columna específica
 check_column(Column, Winner) :-
@@ -95,15 +100,18 @@ check_consecutive([Cell|Rest], PrevCell, Count, Winner) :-
         NewCount is Count + 1,
         (   NewCount == 4 ->  % Si hay 4 consecutivas
             (   Cell = "red" -> Winner = 1;  % Ganador 1
-                Cell = 'yellow' -> Winner = 2  % Ganador 2
+                Cell = "yellow" -> Winner = 2  % Ganador 2
             )
         ;   check_consecutive(Rest, Cell, NewCount, Winner)  % Continuar contando
         )
     ;   check_consecutive(Rest, Cell, 1, Winner)  % Si no coincide, reiniciar conteo
     ).
 
-% Función para eliminar el primer elemento de una lista
-remove_first([_|Tail], Tail).
+% Función para eliminar el primer elemento de cada fila de un tablero
+remove_first_from_board([], []).  % Caso base: tablero vacío
+remove_first_from_board([[_|TailRow] | RestRows], [TailRow | NewRestRows]) :-
+    remove_first_from_board(RestRows, NewRestRows).
+
 
 %Nombre: check_horizontal_win
 %Dominio: board(board)
