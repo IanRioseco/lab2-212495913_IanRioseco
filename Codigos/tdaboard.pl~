@@ -64,7 +64,11 @@ replace_in_list([H|T], Index, Piece, [H|NewT]) :-
 %Meta Secunbdaria:
 % Predicado principal para verificar si hay una victoria vertical
 check_vertical_win(Board, Winner) :-
-    check_columns(Board, Winner).
+    (   check_columns(Board, Winner),
+        Winner \= 0  % Si se encuentra un ganador, detener
+    ->  true
+    ;   Winner = 0  % Si no se encuentra un ganador, devolver 0
+    ).
 
 % Verificar todas las columnas
 check_columns([], 0).  % Si no hay más columnas, no hay ganador

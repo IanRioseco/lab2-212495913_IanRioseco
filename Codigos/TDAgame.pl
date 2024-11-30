@@ -15,7 +15,7 @@ game(Player1, Player2, Board, CurrentTurn,Game):-
 %Dominio: Game(game) X Player1(player)
 %descripcion: predicado para obtener al jugador 1
 %Meta Primaria: getGamePlayer1/2
-%Meta Secunbdaria:
+%Meta Secunbdaria: ninguna
 getGamePlayer1([Player1,_,_,_,_], Player1).
 
 %getter
@@ -23,7 +23,7 @@ getGamePlayer1([Player1,_,_,_,_], Player1).
 %Dominio: Game(game) X Player2(player)
 %descripcion: predicado para obtener el jugador 2
 %Meta Primaria: getGamePlayer2/2
-%Meta Secunbdaria:
+%Meta Secunbdaria: ninguna
 getGamePlayer2([_,Player2,_,_,_], Player2).
 
 %getter
@@ -31,21 +31,25 @@ getGamePlayer2([_,Player2,_,_,_], Player2).
 %Dominio: Game(game) X CurrentTurn(int)
 %descripcion: predicado para obtener el turno actual
 %Meta Primaria: getGameCurrentTurn/2
-%Meta Secunbdaria:
+%Meta Secunbdaria: ninguna
 getGameCurrentTurn([_,_,_,CurrentTurn,_], CurrentTurn).
 
 %Nombre:Game_History
 %Dominio: Game(game) X History(lista)
 %descripcion: predicado para obtener el historial
-%Meta Primaria:
-%Meta Secunbdaria:
+%Meta Primaria: game_history/2
+%Meta Secunbdaria: ninguna
 game_history([_, _, _, _, History], History).
 
-%Nombre:
-%Dominio:
-%descripcion:
-%Meta Primaria:
-%Meta Secunbdaria:
+%Nombre: is_draw
+%Dominio: Game(game)
+%descripcion: determina si el juego termina en empate o no
+%Meta Primaria: is_draw/1
+%Meta Secunbdaria:%   - game_get_board/2
+                  %   - getGamePlayer1/2
+                  %   - getGamePlayer2/2
+                  %   - getRemainingPiecesplayer/2
+                  %   - can_play/1
 is_draw(Game) :-
     game_get_board(Game, Board),
     getGamePlayer1(Game, Player1),
@@ -66,10 +70,13 @@ is_draw(Game) :-
 
 
 %Nombre: update_stats
-%Dominio:
-%descripcion:
-%Meta Primaria:
-%Meta Secunbdaria:
+%Dominio: Game(game) X Oldstats(player) X Newstats(player)
+%descripcion: actualiza las estadisticas de la partida.
+%Meta Primaria: update_stats/3
+%Meta Secunbdaria:%   - game_get_board/2
+                  %   - getIdplayer/2
+                  %   - who_is_winner/2
+                  %   - is_draw/1
 update_stats(Game, Oldstats, Newstats) :-
     game_get_board(Game, Board),
     getIdplayer(Oldstats, Id),
@@ -88,11 +95,6 @@ update_stats(Game, Oldstats, Newstats) :-
         )
     ).
 
-%Nombre: end_game
-%Dominio:
-%descripcion:
-%Meta Primaria:
-%Meta Secunbdaria:
 % Actualiza las estadisticas de un jugador
 update([ID, Name, Color, Wins, Losses, Draws, Pieces], victory,
              [ID, Name, Color, NewWins, Losses, Draws, Pieces]) :-
@@ -107,10 +109,10 @@ update([ID, Name, Color, Wins, Losses, Draws, Pieces], draw,
     NewDraws is Draws + 1.
 
 %Nombre: get_current_player
-%Dominio:
-%descripcion:
-%Meta Primaria:
-%Meta Secunbdaria:
+%Dominio: Game(game) X Player(player)
+%descripcion: obtiene el jugador actual del juego
+%Meta Primaria: get_current_player/2
+%Meta Secunbdaria: ninguna
 get_current_player(Game, CurrentPlayer) :-
     getGameCurrentTurn(Game, CurrentTurn),
     (   CurrentTurn == 1
@@ -124,17 +126,22 @@ get_current_player(Game, CurrentPlayer) :-
 %Nombre:getGameBoard
 %Dominio: Game(game) X Board(board)
 %descripcion: predicado para obtener el tablero
-%Meta Primaria: getGameBoard/2
-%Meta Secunbdaria:
+%Meta Primaria: game_get_board/2
+%Meta Secunbdaria: ninguna
 game_get_board([_,_,Board,_,_], Board).
 
 
 
 %Nombre: end_game
-%Dominio:
-%descripcion:
-%Meta Primaria:
-%Meta Secunbdaria:
+%Dominio: Game(game) X Endgame(game)
+%descripcion: genera el estado final del juego
+%Meta Primaria: end_game/2
+%Meta Secunbdaria:%   - getGamePlayer1/2
+                  %   - getGamePlayer2/2
+                  %   - game_get_board/2
+                  %   - getGameCurrentTurn/2
+                  %   - game_history/2
+                  %   - update_stats/3
 end_game(Game,EndGame):-
     getGamePlayer1(Game,Player1),
     getGamePlayer2(Game,Player2),
@@ -145,12 +152,22 @@ end_game(Game,EndGame):-
     update_stats(Game,Player2,UpdateP2),
     EndGame = [UpdateP1,UpdateP2,Board,Turn,History].
 
-
 %Nombre: player_play
-%Dominio:
-%descripcion:
-%Meta Primaria:
-%Meta Secunbdaria:
+% Dominio: Game(game) X Player(player) X Column(int) X NewGame(game)
+% Descripción: Realiza un movimiento para un jugador en la columna especificada.
+% Meta Primaria: player_play/4
+% Meta Secundaria: %   - getGamePlayer1/2
+                   %   - getGamePlayer2/2
+                   %   - getGameCurrentTurn/2
+                   %   - game_get_board/2
+                   %   - getIdplayer/2
+                   %   - getRemainingPiecesplayer/2
+                   %   - getColorplayer/2
+                   %   - play_piece/4
+                   %   - decreasePieces/2
+                   %   - update_game_history/3
+                   %   - who_is_winner/2
+                   %   - is_draw/1
 player_play(Game, Player, Column, NewGame) :-
     % Obtener los jugadores y el turno actual
     getGamePlayer1(Game, Player1),
@@ -204,11 +221,15 @@ player_play(Game, Player, Column, NewGame) :-
         )
     ).
 
-%Nombre: player_play
-%Dominio:
-%descripcion:
-%Meta Primaria:
-%Meta Secunbdaria:
+%Nombre: update_game_history
+% Dominio: Game(game) X Column(int) X Color(string) X NewGame(game)
+% Descripción: Actualiza el historial del juego con el movimiento realizado.
+% Meta Primaria: update_game_history/4
+% Meta Secundaria:%   - game_history/2
+                  %   - getGamePlayer1/2
+                  %   - getGamePlayer2/2
+                  %   - game_get_board/2
+                  %   - getGameCurrentTurn/2
 decreasePieces(Player,UpdatedPlayer) :-
     % Obtener el ID, nombre, color, victorias, derrotas, empates y las piezas restantes del jugador
     nth1(1, Player, ID),
@@ -219,29 +240,29 @@ decreasePieces(Player,UpdatedPlayer) :-
     nth1(6, Player, Draws),
     nth1(7, Player, RemainingPieces),
 
-    % Restar 1 a la cantidad de piezas restantes
+    % se Resta 1 a la cantidad de piezas restantes
     NewRemainingPieces is RemainingPieces - 1,
 
-    % Crear el jugador actualizado con la nueva cantidad de piezas
+    % se Crea el jugador actualizado con la nueva cantidad de piezas
     UpdatedPlayer = [ID, Name, Color, Victories, Defeats, Draws, NewRemainingPieces].
 
-%Nombre: player_play
-%Dominio:
-%descripcion:
-%Meta Primaria:
+%Nombre: update_game_history
+%Dominio: Game(game) X Column(int) X Color(color) X Newgame(game)
+%descripcion: genera un juego con el hiztorial actualizado
+%Meta Primaria: update_game_history/4
 %Meta Secunbdaria:
 % Predicado que actualiza el historial del juego
 update_game_history(Game, Column, Color, NewGame) :-
     % Obtener el historial actual
     game_history(Game, History),
 
-    % Crear el nuevo movimiento (columna y color de la pieza)
+    % se Crea el nuevo movimiento (columna y color de la pieza)
     Move = [Column, Color],  % Representa el movimiento
 
-    % Añadir el movimiento al historial existente
+    % se Añade el movimiento al historial existente
     append(History, [Move], NewHistory),
 
-    % Obtener los demás elementos del juego (jugadores, tablero, etc.)
+    % se Obtienen los demás elementos del juego (jugadores, tablero, etc.)
     getGamePlayer1(Game, Player1),
     getGamePlayer2(Game, Player2),
     game_get_board(Game, Board),

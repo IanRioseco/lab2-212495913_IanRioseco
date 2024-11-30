@@ -1,11 +1,11 @@
 :-module(tdaboard,[board/1, can_play/1, play_piece/4, check_vertical_win/2, check_horizontal_win/2, check_diagonal_win/2, who_is_winner/2]).
 
 
-%Nombre: Board
-%Dominio: no recibe parametros de entrada
-%descripcion: predicado que crea un tablero de conecta4
-%Meta Primaria:
-%Meta Secunbdaria:
+%Nombre: board
+% Dominio: no recibe parámetros de entrada
+% Descripción: predicado que crea un tablero de conecta4.
+% Meta Primaria: board/1
+% Meta Secundaria: ninguna
 board([F1,F2,F3,F4,F5,F6]):-
     F1=[vacio,vacio,vacio,vacio,vacio,vacio,vacio],
     F2=[vacio,vacio,vacio,vacio,vacio,vacio,vacio],
@@ -29,7 +29,9 @@ can_play(Board) :-
 %Dominio: Board(board) X Column(int) X Piece(piece) X NewBoard(game).
 %descripcion: juega una ficha en el tablero
 %Meta Primaria: play_piece/4
-%Meta Secunbdaria:
+%Meta Secunbdaria:%   - find_row_to_place/4
+                  %   - place_in_column/4
+                  %   - replace_in_list/4
 play_piece(Board, Column, Piece, NewBoard) :-
     % Verificar que la columna esté dentro de los límites del tablero
     %length(Board, NumRows),
@@ -61,8 +63,10 @@ replace_in_list([H|T], Index, Piece, [H|NewT]) :-
 %Dominio: Board(board)
 %descripcion: predicado que verifica si es que existe un ganador vertical
 %Meta Primaria: check_vertical_win/2
-%Meta Secunbdaria:
-% Predicado principal para verificar si hay una victoria vertical
+%Meta Secunbdaria:%   - check_columns/2
+                  %   - get_column/2
+                  %   - check_column/2
+                  %   - check_consecutive/4
 check_vertical_win(Board, Winner) :-
     (   check_columns(Board, Winner),
         Winner \= 0  % Si se encuentra un ganador, detener
@@ -85,7 +89,7 @@ check_columns(Board, Winner) :-
 get_column([], []).  % Si no hay filas, retornar lista vacía
 get_column([Row|RestRows], [First|RestFirsts]) :-
     nth0(0, Row, First),  % Obtener el primer elemento de la fila
-    get_column(RestRows, RestFirsts).  % Recursivamente obtener el resto de la columna
+    get_column(RestRows, RestFirsts).  % Recursivamente se obtiene el resto de la columna
 
 % Verificar una columna específica
 check_column(Column, Winner) :-
@@ -117,7 +121,8 @@ remove_first_from_board([[_|TailRow] | RestRows], [TailRow | NewRestRows]) :-
 %Dominio: board(board)
 %descripcion: predicado que verifica si existe un ganador horizontal
 %Meta Primaria: check_horizontal_win/2
-%Meta Secunbdaria:
+%Meta Secunbdaria:%   - check_columns2/2
+                  %   - check_consecutive2/2
 check_horizontal_win(Board, Winner) :-
     check_columns2(Board, Winner).
 % Recorrer columnas del tablero
@@ -128,7 +133,7 @@ check_columns2([Column|Rest], Winner) :-
     check_columns2(Rest, Winner).
 % Verificar 4 fichas consecutivas en una columna
 check_consecutive2(Column, Winner) :-
-    append(_, [C1, C2, C3, C4|_], Column), % Verificar bloques consecutivos
+    append(_, [C1, C2, C3, C4|_], Column), % Verificaion de fichas consecutivas
     C1 = C2, C2 = C3, C3 = C4,
     (C1 = "red" -> Winner = 1;
      C1 = "yellow" -> Winner = 2;
@@ -139,8 +144,8 @@ check_consecutive2(Column, Winner) :-
 %Dominio: Board(board)
 %descripcion: predicaco que verifica si existe ganador diagonal
 %Meta Primaria: check_diagonal_win/2
-%Meta Secunbdaria:
-% Predicado principal para verificar si hay una victoria diagonal
+%Meta Secunbdaria:%   - check_ascending_diagonal/2
+                  %   - check_descending_diagonal/2
 check_diagonal_win(Board, Winner) :-
     (   check_ascending_diagonal(Board, Winner)
     ;   check_descending_diagonal(Board, Winner)
@@ -154,7 +159,7 @@ check_ascending_diagonal(Board, Winner) :-
     check_ascending_diagonal_helper(Board, Rows, Cols, Winner, 0, 0).
 
 check_ascending_diagonal_helper(Board, Rows, Cols, Winner, Row, Col) :-
-    (   Row =< Rows - 4, Col =< Cols - 4 ->  % Asegurarse de que hay espacio para verificar
+    (   Row =< Rows - 4, Col =< Cols - 4 ->  % se asegura de que hay espacio para verificar
         nth0(Row, Board, Line1), nth0(Col, Line1, Cell1),
         Row1 is Row + 1, Col1 is Col + 1,
         nth0(Row1, Board, Line2), nth0(Col1, Line2, Cell2),
@@ -162,7 +167,7 @@ check_ascending_diagonal_helper(Board, Rows, Cols, Winner, Row, Col) :-
         nth0(Row2, Board, Line3), nth0(Col2, Line3, Cell3),
         Row3 is Row + 3, Col3 is Col + 3,
         nth0(Row3, Board, Line4), nth0(Col3, Line4, Cell4),
-        (Cell1 = Cell2, Cell2 = Cell3, Cell3 = Cell4,  % Verificar igualdad
+        (Cell1 = Cell2, Cell2 = Cell3, Cell3 = Cell4,  % Verifica la igualdad para ver si existe ganador
             (Cell1 = "red" -> Winner = 1;
              Cell1 = "yellow" -> Winner = 2)
         )
@@ -171,7 +176,7 @@ check_ascending_diagonal_helper(Board, Rows, Cols, Winner, Row, Col) :-
             check_ascending_diagonal_helper(Board, Rows, Cols, Winner, Row, NextCol)
         ;
             NextRow is Row + 1,
-            check_ascending_diagonal_helper(Board, Rows, Cols, Winner, NextRow, 0)  % Mover a la siguiente fila
+            check_ascending_diagonal_helper(Board, Rows, Cols, Winner, NextRow, 0)  % mueve hacia la siguiente fila
         )
     ).
 % Verificar diagonales descendentes
@@ -181,7 +186,7 @@ check_descending_diagonal(Board, Winner) :-
     check_descending_diagonal_helper(Board, Rows, Cols, Winner, 5, 0).
 
 check_descending_diagonal_helper(Board, Rows, Cols, Winner, Row, Col) :-
-    (   Row >= 3, Col =< Cols - 4 ->  % Asegurarse de que hay espacio para verificar
+    (   Row >= 3, Col =< Cols - 4 ->  % linea que se asegura de que hay espacio para verificar
         nth0(Row, Board, Line1), nth0(Col, Line1, Cell1),
         Row1 is Row - 1, Col1 is Col + 1,
         nth0(Row1, Board, Line2), nth0(Col1, Line2, Cell2),
@@ -189,7 +194,7 @@ check_descending_diagonal_helper(Board, Rows, Cols, Winner, Row, Col) :-
         nth0(Row2, Board, Line3), nth0(Col2, Line3, Cell3),
         Row3 is Row - 3, Col3 is Col + 3,
         nth0(Row3, Board, Line4), nth0(Col3, Line4, Cell4),
-        (Cell1 = Cell2, Cell2 = Cell3, Cell3 = Cell4 ->  % Verificar igualdad
+        (Cell1 = Cell2, Cell2 = Cell3, Cell3 = Cell4 ->  % Verifica igualdad para obtener un ganador.
             (Cell1 = "red" -> Winner = 1;
              Cell1 = "yellow" -> Winner = 2)
         )
@@ -206,11 +211,11 @@ check_descending_diagonal_helper(Board, Rows, Cols, Winner, Row, Col) :-
 %Dominio: Board(board)
 %descripcion: predicado que verifica si existe algun ganador.
 %Meta Primaria: who_is_winner/2
-%Meta Secunbdaria:
+%Meta Secunbdaria: ninguna.
 who_is_winner(Board, Winner) :-
-    (check_horizontal_win(Board, Winner), Winner \= 0);  % Verifica ganador horizontal
-    (check_vertical_win(Board, Winner), Winner \= 0);    % Verifica ganador vertical
-    (check_diagonal_win(Board, Winner), Winner \= 0),    % Verifica ganador diagonal
+    (check_horizontal_win(Board, Winner), Winner \= 0);  % Verificacion de ganador horizontal
+    (check_vertical_win(Board, Winner), Winner \= 0);    % Verificacion de ganador vertical
+    (check_diagonal_win(Board, Winner), Winner \= 0),    % Verificacion de ganador diagonal
     !. % Detiene la evaluación si ya se encontró un ganador
 
 who_is_winner(_, 0). % Caso base: No hay ganador.
