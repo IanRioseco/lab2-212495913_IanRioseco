@@ -1,13 +1,9 @@
 player(1, "Juan", "red", 0, 0, 0, 21, P1),
 player(2, "Mauricio", "yellow", 0, 0, 0, 21, P2),
-
 piece(red , RedPiece),
 piece(yellow, YellowPiece),
-
 board(EmptyBoard),
-
 game(P1, P2, EmptyBoard, 1, G0),
-
 player_play(G0, P1, 1, G1), 
 player_play(G1, P2, 5, G2),    
 player_play(G2, P1, 2, G3),    
@@ -21,42 +17,37 @@ player_play(G9, P2, 5, G10),
 player_play(G10, P1, 1, G11), 
 player_play(G11, P2, 3, G12), 
 player_play(G12, P1, 1, G13),   
-
 write('¿Se puede jugar en el tablero vacío? '),
-can_play(EmptyBoard), % Si se puede seguir jugando, el programa continuará
+can_play(EmptyBoard),
 nl,
-
 game_get_board(G13, CurrentBoard),
 write('¿Se puede jugar después de 13 movimientos? '),
 can_play(CurrentBoard),
 nl,
-
 write('Jugador actual después de 13 movimientos: '),
 get_current_player(G13, CurrentPlayer),
-write(CurrentPlayer),
 nl,
-
 write('Verificación de victoria vertical: '),
 check_vertical_win(CurrentBoard, VerticalWinner),
 write(VerticalWinner),
 nl,
-
 write('Verificación de ganador: '),
 who_is_winner(CurrentBoard, Winner),
 write(Winner),
 nl,
-
+write('¿Es empate?'),
+(is_draw(G13) -> true ; write(' no es empate')),
+nl,
 write('Estado final del juego: '),
 write(G13),
 nl,
-
+end_game(G13, EndedGame),
 write('Historial de movimientos: '),
-game_history(G13, History),
+game_history(EndedGame, History),
 write(History),
 nl,
-
 write('Estado final del tablero: '),
-game_get_board(G13, FinalBoard),
+game_get_board(EndedGame, FinalBoard),
 write(FinalBoard).
 
 

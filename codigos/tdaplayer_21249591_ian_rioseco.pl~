@@ -1,4 +1,16 @@
-:-module(tdaplayer,[player/8, getIdplayer/2, getNameplayer/2, getColorplayer/2, getWinsplayer/2, getLossesplayer/2, getDrawsplayer/2, getRemainingPiecesplayer/2]).
+:- module(tdaplayer_21249591_ian_rioseco,[
+              player/8,
+              getIdplayer/2,
+              getNameplayer/2,
+              getColorplayer/2,
+              getWinsplayer/2,
+              getLossesplayer/2,
+              getDrawsplayer/2,
+              getRemainingPiecesplayer/2,
+              decreasePieces/2,
+              update_wins/3,
+              update_losses/3,
+              update_draws/3]).
 
 %Nombre: player
 %Dominio: id(int) X Nombre(string) X color(string) X Wins(int) X Losses(int) X Draws(int) X RemainingPieces(int) X Player
@@ -65,5 +77,37 @@ getRemainingPiecesplayer(Player,RemainingPieces):-
     player(_,_,_,_,_,_,RemainingPieces, Player).
 
 
+%Nombre: decreasepieces
+% Dominio: player(Player) X UpdatedPlayer(Player)
+% Descripción: Disnimuye la cantidad de piezas restantes del jugador.
+% Meta Primaria: decreasePieces/2
+decreasePieces(Player,UpdatedPlayer) :-
+    % Obtener el ID, nombre, color, victorias, derrotas, empates y las piezas restantes del jugador
+    nth1(1, Player, ID),
+    nth1(2, Player, Name),
+    nth1(3, Player, Color),
+    nth1(4, Player, Victories),
+    nth1(5, Player, Defeats),
+    nth1(6, Player, Draws),
+    nth1(7, Player, RemainingPieces),
+
+    % se Resta 1 a la cantidad de piezas restantes
+    NewRemainingPieces is RemainingPieces - 1,
+
+    % se Crea el jugador actualizado con la nueva cantidad de piezas
+    UpdatedPlayer = [ID, Name, Color, Victories, Defeats, Draws, NewRemainingPieces].
 
 
+
+% Actualiza las estadisticas de un jugador
+update_wins([ID, Name, Color, Wins, Losses, Draws, Pieces], victory,
+             [ID, Name, Color, NewWins, Losses, Draws, Pieces]) :-
+    NewWins is Wins + 1.
+
+update_losses([ID, Name, Color, Wins, Losses, Draws, Pieces], defeat,
+             [ID, Name, Color, Wins, NewLosses, Draws, Pieces]) :-
+    NewLosses is Losses + 1.
+
+update_draws([ID, Name, Color, Wins, Losses, Draws, Pieces], draw,
+             [ID, Name, Color, Wins, Losses, NewDraws, Pieces]) :-
+    NewDraws is Draws + 1.

@@ -1,4 +1,5 @@
-:-module(tdapiece,[piece/2]).
+:- module(tdapiece_21249591_ian_rioseco,[
+              piece/2]).
 
 
 %Nombre: piece.

@@ -1,4 +1,5 @@
-:-module(tdapiece,[piece/2]).
+:- module(tdapiece_21249591_Ian_Rioseco,[
+              piece/2]).
 
 
 %Nombre: piece.
@@ -6,4 +7,5 @@
 %descripcion: Predicado que permite crear una ficha.
 %Meta Primaria: piece/1.
 %Meta Secunbdaria: no contiene.
-piece(Color, [Color]).
+piece(Color, PieceColor):-
+    PieceColor = [Color].

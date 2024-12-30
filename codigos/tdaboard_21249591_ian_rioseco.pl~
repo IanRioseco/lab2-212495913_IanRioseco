@@ -1,5 +1,11 @@
-:-module(tdaboard,[board/1, can_play/1, play_piece/4, check_vertical_win/2, check_horizontal_win/2, check_diagonal_win/2, who_is_winner/2]).
-
+:-module(tdaboard_21249591_ian_rioseco,[
+              board/1,
+              can_play/1,
+              play_piece/4,
+              check_vertical_win/2,
+              check_horizontal_win/2,
+              check_diagonal_win/2,
+              who_is_winner/2]).
 
 %Nombre: board
 % Dominio: no recibe parámetros de entrada
@@ -20,10 +26,8 @@ board([F1,F2,F3,F4,F5,F6]):-
 %Meta Primaria: can_play/1.
 %Meta Secunbdaria:no tiene.
 can_play(Board) :-
-    (   member([vacio|_], Board)
-    ->  write(''), nl, true
-    ;   write('No se puede jugar en el tablero: está lleno.'), nl, false
-    ).
+    member(Column, Board),
+    member(vacio, Column),!.
 
 %Nombre: play_piece.
 %Dominio: Board(board) X Column(int) X Piece(piece) X NewBoard(game).
@@ -212,11 +216,11 @@ check_descending_diagonal_helper(Board, Rows, Cols, Winner, Row, Col) :-
 %descripcion: predicado que verifica si existe algun ganador.
 %Meta Primaria: who_is_winner/2
 %Meta Secunbdaria: ninguna.
+
+
 who_is_winner(Board, Winner) :-
     (check_horizontal_win(Board, Winner), Winner \= 0);  % Verificacion de ganador horizontal
     (check_vertical_win(Board, Winner), Winner \= 0);    % Verificacion de ganador vertical
     (check_diagonal_win(Board, Winner), Winner \= 0),    % Verificacion de ganador diagonal
     !. % Detiene la evaluación si ya se encontró un ganador
-
 who_is_winner(_, 0). % Caso base: No hay ganador.
-
