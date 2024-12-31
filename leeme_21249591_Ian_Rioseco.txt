@@ -1,8 +1,4 @@
-
-
-
-
-
+El script base llegara hasta la función is_draw debido a que verifica si es empeta o no, entregando false si no es empate y true si es empate, debido a esto el programa entregara un false y se terminara la prueba del script.
 
 
 Asegúrate de tener una carpeta con los siguientes archivos, esta carpeta se llama lab2-212495913_IanRioseco y contiene los siguientes archivos:

@@ -219,8 +219,13 @@ check_descending_diagonal_helper(Board, Rows, Cols, Winner, Row, Col) :-
 
 
 who_is_winner(Board, Winner) :-
-    (check_horizontal_win(Board, Winner), Winner \= 0);  % Verificacion de ganador horizontal
-    (check_vertical_win(Board, Winner), Winner \= 0);    % Verificacion de ganador vertical
-    (check_diagonal_win(Board, Winner), Winner \= 0),    % Verificacion de ganador diagonal
-    !. % Detiene la evaluación si ya se encontró un ganador
-who_is_winner(_, 0). % Caso base: No hay ganador.
+    (   check_diagonal_win(Board, Winner),
+        Winner \= 0
+    ->  true
+    ;   check_horizontal_win(Board, Winner),
+        Winner \= 0
+    ->  true
+    ;   check_vertical_win(Board, Winner),
+        Winner \= 0
+    ->  true
+    ;   Winner = 0).

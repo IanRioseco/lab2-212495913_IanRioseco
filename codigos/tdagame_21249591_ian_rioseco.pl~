@@ -170,52 +170,60 @@ player_play(Game, Player, Column, NewGame) :-
     getGamePlayer1(Game, Player1),
     getGamePlayer2(Game, Player2),
     getGameCurrentTurn(Game, CurrentTurn),
-    game_get_board(Game,Board),
+    game_get_board(Game, Board),
+
     % Verificar turno del jugador
-    (   CurrentTurn == 1
+    (   CurrentTurn = 1
     ->  Pactual = Player1
     ;   Pactual = Player2
     ),
-    getIdplayer(Player,Idplayer),
-    getIdplayer(Pactual,Idactual),
-    (   Idplayer == Idactual
+    getIdplayer(Player, Idplayer),
+    getIdplayer(Pactual, Idactual),
+    (   Idplayer = Idactual
     ->  PlayerToUse = Pactual
-    ;   write('no es el turno del jugador'),nl,fail
+    ;   write('No es el turno del jugador'), nl, fail
     ),
 
-    % ver piezas restantes
-    getRemainingPiecesplayer(PlayerToUse,Pieces),
-    Pieces>0,
-
-    % color de la pieza
-    getColorplayer(PlayerToUse,Color),
-
-    % jugar pieza
-    play_piece(Board,Column,Color,NewBoard),
-
-    % creacion historial
-    update_game_history(Game,Column,Color,NewGameHistory),
-    game_history(NewGameHistory,History),
-
-    % disminuir piezas
-    decreasePieces(PlayerToUse,NewPlayer),
-    (   CurrentTurn == 1
-    ->  NGame = [NewPlayer,Player2,NewBoard,NewTurn,History]
-    ;   NGame = [Player1,NewPlayer,NewBoard,NewTurn,History]
+    % Verificar piezas restantes
+    getRemainingPiecesplayer(PlayerToUse, Pieces),
+    (   Pieces > 0
+    ->  true
+    ;   write('El jugador no tiene piezas suficientes.'), nl, fail
     ),
 
-    % actualizar turno
+    % Obtener color de la pieza
+    getColorplayer(PlayerToUse, Color),
+
+    % Intentar jugar la pieza
+    (   play_piece(Board, Column, Color, NewBoard)
+    ->  true
+    ;   write('La columna está llena o es inválida.'), nl, fail
+    ),
+
+    % Actualizar el historial del juego
+    update_game_history(Game, Column, Color, NewGameHistory),
+    game_history(NewGameHistory, History),
+
+    % Disminuir piezas del jugador
+    decreasePieces(PlayerToUse, NewPlayer),
+
+    % Actualizar el turno
     NewTurn is 3 - CurrentTurn,
 
-    % verificar estado del juego
-    (   who_is_winner(NewBoard,Winner), Winner \= 0
-    ->  end_game(NGame,NewGame)
-    ;   is_draw(NGame)
-    ->  end_game(NGame,NewGame)
-    ;   (   CurrentTurn == 1
-        ->  NewGame = [NewPlayer,Player2,NewBoard,NewTurn,History]
-        ;   NewGame = [Player1,NewPlayer,NewBoard,NewTurn,History]
-        )
+    % Crear el nuevo estado del juego
+    (   CurrentTurn = 1
+    ->  NGame = [NewPlayer, Player2, NewBoard, NewTurn, History]
+    ;   NGame = [Player1, NewPlayer, NewBoard, NewTurn, History]
+    ),
+
+    % Verificar el estado del juego
+    (   who_is_winner(NewBoard, Winner), Winner \= 0 ->
+        end_game(NGame, NewGame)
+    ;   is_draw(NewBoard) ->
+        write('El juego terminó en empate.'), nl,
+        end_game(NGame, NewGame)
+    ;
+        NewGame = NGame
     ).
 
 %Nombre: update_game_history
