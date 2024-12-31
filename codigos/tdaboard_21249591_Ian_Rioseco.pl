@@ -216,14 +216,13 @@ check_descending_diagonal_helper(Board, Rows, Cols, Winner, Row, Col) :-
 %descripcion: predicado que verifica si existe algun ganador.
 %Meta Primaria: who_is_winner/2
 who_is_winner(Board, Winner) :-
-    (   check_diagonal_win(Board, TempWinner),
-        TempWinner \= 0
-    ->  Winner = TempWinner
-    ;   check_horizontal_win(Board, TempWinner),
-        TempWinner \= 0
-    ->  Winner = TempWinner
-    ;   check_vertical_win(Board, TempWinner),
-        TempWinner \= 0
-    ->  Winner = TempWinner
-    ;   Winner = 0
-    ).
+    (   check_diagonal_win(Board, Winner),
+        Winner \= 0
+    ->  true
+    ;   check_horizontal_win(Board, Winner),
+        Winner \= 0
+    ->  true
+    ;   check_vertical_win(Board, Winner),
+        Winner \= 0
+    ->  true
+    ;   Winner = 0).

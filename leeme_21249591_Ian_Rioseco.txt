@@ -1,16 +1,20 @@
-El script base llegara hasta la función is_draw debido a que verifica si es empeta o no, entregando false si no es empate y true si es empate, debido a esto el programa entregara un false y se terminara la prueba del script.
+PARA UN BUEN DESARROLLO DE LAS PRUEBAS ES NECESARIO QUE EL SCRIPT DE PRUEBA SEA EL ULTIMO EN SER PROBADO.
+DEBEN IR EN ESTE ORDEN LAS PRUEBAS:
+SCRIPT2
+SCRIPT1
+SCRIPT_BASE
+Lo anterior es debido a la implementación que se uso en los códigos.
 
+
+El script base llegara hasta la función is_draw debido a que verifica si es empate o no, entregando false si no es empate y true si es empate, debido a esto el programa entregara un false y se terminara la prueba del script.
 
 Asegúrate de tener una carpeta con los siguientes archivos, esta carpeta se llama lab2-212495913_IanRioseco y contiene los siguientes archivos:
 Archivos .pl (código Prolog): Incluyen todos los módulos y predicados necesarios para ejecutar el programa. Por ejemplo, tdagame_21249591_Ian_Rioseco.pl y otros relacionados, Estos archivos se encuentran dentro de una carpeta códigos.
 Archivos .txt (scripts de prueba): Contienen los casos de prueba para verificar el funcionamiento del programa.
 
-
-
 Ve al menú superior de SWI-Prolog, selecciona File > Edit.
 Navega hasta la carpeta donde están guardados los archivos .pl.
 Selecciona un archivo y haz clic en Abrir. Repite este proceso para abrir todos los archivos .pl que forman parte del proyecto.
-
 
 En el menú de SWI-Prolog, selecciona File > Consult.
 Busca y selecciona el archivo main_21249591_Ian_Rioseco.pl. Este archivo suele ser el punto de entrada del programa, ya que importa otros módulos y define las funcionalidades principales.
