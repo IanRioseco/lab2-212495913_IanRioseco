@@ -11,7 +11,6 @@
 % Dominio: no recibe parámetros de entrada
 % Descripción: predicado que crea un tablero de conecta4.
 % Meta Primaria: board/1
-% Meta Secundaria: ninguna
 board([F1,F2,F3,F4,F5,F6]):-
     F1=[vacio,vacio,vacio,vacio,vacio,vacio,vacio],
     F2=[vacio,vacio,vacio,vacio,vacio,vacio,vacio],
@@ -24,7 +23,6 @@ board([F1,F2,F3,F4,F5,F6]):-
 %Dominio: board.
 %descripcion: verifica si es posible jugar una ficha en el tablero.
 %Meta Primaria: can_play/1.
-%Meta Secunbdaria:no tiene.
 can_play(Board) :-
     member(Column, Board),
     member(vacio, Column),!.
@@ -33,9 +31,6 @@ can_play(Board) :-
 %Dominio: Board(board) X Column(int) X Piece(piece) X NewBoard(game).
 %descripcion: juega una ficha en el tablero
 %Meta Primaria: play_piece/4
-%Meta Secunbdaria:%   - find_row_to_place/4
-                  %   - place_in_column/4
-                  %   - replace_in_list/4
 play_piece(Board, Column, Piece, NewBoard) :-
     % Verificar que la columna esté dentro de los límites del tablero
     %length(Board, NumRows),
@@ -125,8 +120,6 @@ remove_first_from_board([[_|TailRow] | RestRows], [TailRow | NewRestRows]) :-
 %Dominio: board(board)
 %descripcion: predicado que verifica si existe un ganador horizontal
 %Meta Primaria: check_horizontal_win/2
-%Meta Secunbdaria:%   - check_columns2/2
-                  %   - check_consecutive2/2
 check_horizontal_win(Board, Winner) :-
     check_columns2(Board, Winner).
 % Recorrer columnas del tablero

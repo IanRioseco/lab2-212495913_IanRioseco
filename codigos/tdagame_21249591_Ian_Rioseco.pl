@@ -63,15 +63,17 @@ game_history([_, _, _, _, History], History).
                   %   - can_play/1
 is_draw(Game) :-
     game_get_board(Game, Board),
-    getGamePlayer1(Game, Player1),
-    getGamePlayer2(Game, Player2),
-    getRemainingPiecesplayer(Player1, Pieces1),
-    getRemainingPiecesplayer(Player2, Pieces2),
     who_is_winner(Board, Winner),
-    % Verificar si el tablero está lleno
-    Winner =:= 0,
-    Pieces1 =:= 0,
-    Pieces2 =:= 0.
+    (Winner =:= 0 ->  % Si no hay ganador
+        getGamePlayer1(Game, Player1),
+        getGamePlayer2(Game, Player2),
+        getRemainingPiecesplayer(Player1, Pieces1),
+        getRemainingPiecesplayer(Player2, Pieces2),
+        (Pieces1 =:= 0, Pieces2 =:= 0 -> true ; false)  % Si ambos jugadores no tienen piezas restantes
+    ;
+        false  % Si hay un ganador, no es empate
+    ).
+
 %Nombre: update_stats
 %Dominio: Game(game) X Oldstats(player) X Newstats(player)
 %descripcion: actualiza las estadisticas de la partida.

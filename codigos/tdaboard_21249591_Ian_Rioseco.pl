@@ -11,7 +11,6 @@
 % Dominio: no recibe parámetros de entrada
 % Descripción: predicado que crea un tablero de conecta4.
 % Meta Primaria: board/1
-% Meta Secundaria: ninguna
 board([F1,F2,F3,F4,F5,F6]):-
     F1=[vacio,vacio,vacio,vacio,vacio,vacio,vacio],
     F2=[vacio,vacio,vacio,vacio,vacio,vacio,vacio],
@@ -24,7 +23,6 @@ board([F1,F2,F3,F4,F5,F6]):-
 %Dominio: board.
 %descripcion: verifica si es posible jugar una ficha en el tablero.
 %Meta Primaria: can_play/1.
-%Meta Secunbdaria:no tiene.
 can_play(Board) :-
     member(Column, Board),
     member(vacio, Column),!.
@@ -33,9 +31,6 @@ can_play(Board) :-
 %Dominio: Board(board) X Column(int) X Piece(piece) X NewBoard(game).
 %descripcion: juega una ficha en el tablero
 %Meta Primaria: play_piece/4
-%Meta Secunbdaria:%   - find_row_to_place/4
-                  %   - place_in_column/4
-                  %   - replace_in_list/4
 play_piece(Board, Column, Piece, NewBoard) :-
     % Verificar que la columna esté dentro de los límites del tablero
     %length(Board, NumRows),
@@ -44,12 +39,23 @@ play_piece(Board, Column, Piece, NewBoard) :-
     Column =< NumCols,
     % Encuentra la primera fila desde abajo que tenga un "vacio" en la columna especificada
     find_row_to_place(Board, Column, Piece, NewBoard).
-% Predicado para encontrar la fila desde abajo donde colocar la pieza en la columna dada
+
+
+
+%Nombre: find_row_to_place
+%Dominio: Board(board)
+%descripcion: funcion para encontrar una fila para poner una pieza.
+%Meta Primaria: find_row_to_place/2
 find_row_to_place(Board, Column, Piece, NewBoard) :-
     reverse(Board, ReversedBoard),
     place_in_column(ReversedBoard, Column, Piece, UpdatedReversedBoard),
     reverse(UpdatedReversedBoard, NewBoard).
-% Predicado que coloca la pieza en la primera posición "vacio" de una columna específica en las filas desde abajo
+
+%Nombre: place_in_columns
+%Dominio: Board(board)
+% descripcion: predicado para colocar la pieza en la primera posicion
+% vacioa.
+% Meta Primaria: place_in_columns/2 Predicado que coloca la
 place_in_column([Row|RestRows], Column, Piece, [NewRow|RestRows]) :-
     nth1(Column, Row, vacio), % Verificar si la posición en la columna es vacía
     replace_in_list(Row, Column, Piece, NewRow).
@@ -67,10 +73,6 @@ replace_in_list([H|T], Index, Piece, [H|NewT]) :-
 %Dominio: Board(board)
 %descripcion: predicado que verifica si es que existe un ganador vertical
 %Meta Primaria: check_vertical_win/2
-%Meta Secunbdaria:%   - check_columns/2
-                  %   - get_column/2
-                  %   - check_column/2
-                  %   - check_consecutive/4
 check_vertical_win(Board, Winner) :-
     (   check_columns(Board, Winner),
         Winner \= 0  % Si se encuentra un ganador, detener
@@ -78,7 +80,10 @@ check_vertical_win(Board, Winner) :-
     ;   Winner = 0  % Si no se encuentra un ganador, devolver 0
     ).
 
-% Verificar todas las columnas
+% %Nombre: check_columns
+%Dominio: board(board)
+%descripcion: verifica si existe una pieza en alguna de las columnas.
+%Meta Primaria: check_columns/2
 check_columns([], 0).  % Si no hay más columnas, no hay ganador
 check_columns(Board, Winner) :-
     get_column(Board, Column),  % Extraer la primera columna
@@ -89,17 +94,26 @@ check_columns(Board, Winner) :-
         check_columns(NewBoard, Winner)  % Continuar verificando
     ).
 
-% Función para obtener la primera columna de un tablero
+% %Nombre: get_column
+%Dominio: board(board)
+%descripcion: obtiene la primera columna del tablero.
+%Meta Primaria: get_column/2
 get_column([], []).  % Si no hay filas, retornar lista vacía
 get_column([Row|RestRows], [First|RestFirsts]) :-
     nth0(0, Row, First),  % Obtener el primer elemento de la fila
     get_column(RestRows, RestFirsts).  % Recursivamente se obtiene el resto de la columna
 
-% Verificar una columna específica
+% %Nombre: check_column
+%Dominio: board(board)
+%descripcion: verifica si existe una pieza en alguna en una columna.
+%Meta Primaria: check_column/2
 check_column(Column, Winner) :-
     check_consecutive(Column, 'vacio', 0, Winner).
 
-% Verificar celdas consecutivas en una columna
+% %Nombre: check_consecutive
+%Dominio: board(board)
+%descripcion: verifica las piezas consecutivas.
+%Meta Primaria: check_consecutive/2
 check_consecutive([], _, Count, 0) :- Count < 4, !.  % No hay ganador si el conteo es menor que 4
 check_consecutive([Cell|Rest], PrevCell, Count, Winner) :-
     (   Cell = 'vacio' ->  % Si la celda está vacía
@@ -115,7 +129,11 @@ check_consecutive([Cell|Rest], PrevCell, Count, Winner) :-
     ;   check_consecutive(Rest, Cell, 1, Winner)  % Si no coincide, reiniciar conteo
     ).
 
-% Función para eliminar el primer elemento de cada fila de un tablero
+
+% %Nombre: revome_first_from_board
+%Dominio: board(board)
+%descripcion: Función para eliminar el primer elemento de cada fila de un tablero.
+%Meta Primaria: remove_first_from_board/2
 remove_first_from_board([], []).  % Caso base: tablero vacío
 remove_first_from_board([[_|TailRow] | RestRows], [TailRow | NewRestRows]) :-
     remove_first_from_board(RestRows, NewRestRows).
@@ -125,17 +143,23 @@ remove_first_from_board([[_|TailRow] | RestRows], [TailRow | NewRestRows]) :-
 %Dominio: board(board)
 %descripcion: predicado que verifica si existe un ganador horizontal
 %Meta Primaria: check_horizontal_win/2
-%Meta Secunbdaria:%   - check_columns2/2
-                  %   - check_consecutive2/2
 check_horizontal_win(Board, Winner) :-
     check_columns2(Board, Winner).
-% Recorrer columnas del tablero
+
+% %Nombre: check_columns2
+%Dominio: board(board)
+%descripcion: verifica si existe una pieza en alguna de las columnas.
+%Meta Primaria: check_columns2/2
 check_columns2([], 0). % Caso base: No hay más columnas, no hay ganador
 check_columns2([Column|Rest], Winner) :-
     check_consecutive2(Column, Winner),
     Winner \= 0; % Si hay ganador, detener recursión
     check_columns2(Rest, Winner).
-% Verificar 4 fichas consecutivas en una columna
+
+% %Nombre: check_consecutive2
+%Dominio: board(board)
+%descripcion: verifica las piezas consecutivas.
+%Meta Primaria: check_consecutive2/2
 check_consecutive2(Column, Winner) :-
     append(_, [C1, C2, C3, C4|_], Column), % Verificaion de fichas consecutivas
     C1 = C2, C2 = C3, C3 = C4,
@@ -148,20 +172,26 @@ check_consecutive2(Column, Winner) :-
 %Dominio: Board(board)
 %descripcion: predicaco que verifica si existe ganador diagonal
 %Meta Primaria: check_diagonal_win/2
-%Meta Secunbdaria:%   - check_ascending_diagonal/2
-                  %   - check_descending_diagonal/2
 check_diagonal_win(Board, Winner) :-
     (   check_ascending_diagonal(Board, Winner)
     ;   check_descending_diagonal(Board, Winner)
     ), !.  % Detener si se encuentra un ganador
 check_diagonal_win(_, 0).  % Si no hay ganador, devolver 0.
 
-% Verificar diagonales ascendentes
+%Nombre: check_ascending_diagonal
+%Dominio: Board(board)
+%descripcion: verifica las diagonales ascendentes.
+%Meta Primaria: check_ascending_diagonal/2
 check_ascending_diagonal(Board, Winner) :-
     length(Board, Rows),
     nth0(0, Board, Row), length(Row, Cols), % Obtener dimensiones del tablero
     check_ascending_diagonal_helper(Board, Rows, Cols, Winner, 0, 0).
 
+%Nombre: check_ascending_diagonal_helper
+%Dominio: Board(board)
+% descripcion: funcion auxiliar de verificacion de las diagonales
+% ascendentes.
+%Meta Primaria: check_ascending_diagonal_helper/2
 check_ascending_diagonal_helper(Board, Rows, Cols, Winner, Row, Col) :-
     (   Row =< Rows - 4, Col =< Cols - 4 ->  % se asegura de que hay espacio para verificar
         nth0(Row, Board, Line1), nth0(Col, Line1, Cell1),
@@ -183,12 +213,21 @@ check_ascending_diagonal_helper(Board, Rows, Cols, Winner, Row, Col) :-
             check_ascending_diagonal_helper(Board, Rows, Cols, Winner, NextRow, 0)  % mueve hacia la siguiente fila
         )
     ).
-% Verificar diagonales descendentes
+
+
+%Nombre: check_descending_diagonal
+%Dominio: Board(board)
+%descripcion: verifica las diagonales decendientes.
+%Meta Primaria: check_descending_diagonal/2
 check_descending_diagonal(Board, Winner) :-
     length(Board, Rows),
     nth0(0, Board, Row), length(Row, Cols), % Obtener dimensiones del tablero
     check_descending_diagonal_helper(Board, Rows, Cols, Winner, 5, 0).
 
+%Nombre: check_descending_diagonal_helper
+%Dominio: Board(board)
+%descripcion: auxiliar para verificar las diagonales decendientes.
+%Meta Primaria: check_descending_diagonal_helper/2
 check_descending_diagonal_helper(Board, Rows, Cols, Winner, Row, Col) :-
     (   Row >= 3, Col =< Cols - 4 ->  % linea que se asegura de que hay espacio para verificar
         nth0(Row, Board, Line1), nth0(Col, Line1, Cell1),
@@ -216,13 +255,14 @@ check_descending_diagonal_helper(Board, Rows, Cols, Winner, Row, Col) :-
 %descripcion: predicado que verifica si existe algun ganador.
 %Meta Primaria: who_is_winner/2
 who_is_winner(Board, Winner) :-
-    (   check_diagonal_win(Board, Winner),
-        Winner \= 0
-    ->  true
-    ;   check_horizontal_win(Board, Winner),
-        Winner \= 0
-    ->  true
-    ;   check_vertical_win(Board, Winner),
-        Winner \= 0
-    ->  true
-    ;   Winner = 0).
+    (   check_diagonal_win(Board, TempWinner),
+        TempWinner \= 0
+    ->  Winner = TempWinner
+    ;   check_horizontal_win(Board, TempWinner),
+        TempWinner \= 0
+    ->  Winner = TempWinner
+    ;   check_vertical_win(Board, TempWinner),
+        TempWinner \= 0
+    ->  Winner = TempWinner
+    ;   Winner = 0
+    ).
